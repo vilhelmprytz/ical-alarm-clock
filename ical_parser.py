@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 from ics import Calendar
-from json import load
 from datetime import datetime, date, timedelta
 import requests
 
@@ -9,21 +8,12 @@ __author__ = "Vilhelm Prytz"
 __email__ = "vilhelm@prytznet.se"
 
 
-def _read_config():
-    with open("config.json") as f:
-        config = load(f)
-    return config
-
-
-def get_alarm_time():
-    config = _read_config()
-    cal = Calendar(requests.get(config["url"]).text)
+def get_alarm_time(url: str, hours: int, minutes: int):
+    cal = Calendar(requests.get(url).text)
 
     today = date.today()
     tomorrow = today + timedelta(days=1)
-    alarm_diff = timedelta(
-        hours=config["alarm"]["hours"], minutes=config["alarm"]["minutes"]
-    )
+    alarm_diff = timedelta(hours=hours, minutes=minutes)
 
     tomorrow_events = []
 

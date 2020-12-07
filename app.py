@@ -1,13 +1,18 @@
 #!/usr/bin/env python3
 
-import json
+from json import dumps
 from flask import Flask, jsonify
 from werkzeug.exceptions import HTTPException
+from os import environ
 from ical_parser import get_alarm_time
 
 __author__ = "Vilhelm Prytz"
 __email__ = "vilhelm@prytznet.se"
 
+
+URL = environ["URL"]
+HOURS = int(environ["HOURS"])
+MINUTES = int(environ["MINUTES"])
 
 app = Flask(__name__)
 
@@ -16,7 +21,7 @@ app = Flask(__name__)
 def handle_exception(e):
     response = e.get_response()
 
-    response.data = json.dumps(
+    response.data = dumps(
         {"code": e.code, "name": e.name, "description": e.description}
     )
 
@@ -26,7 +31,7 @@ def handle_exception(e):
 
 @app.route("/api/date")
 def get_alarm():
-    date = get_alarm_time()
+    date = get_alarm_time(url=URL, hours=HOURS, minutes=MINUTES)
 
     if date == False:
         return jsonify({"alarm": False})
