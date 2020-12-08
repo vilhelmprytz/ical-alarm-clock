@@ -8,6 +8,7 @@ ics = "*"
 requests = "*"
 flask = "*"
 gunicorn = "*"
+pychromecast = "*"
 
 [dev-packages]
 black = "==20.8b1"

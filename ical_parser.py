@@ -8,14 +8,10 @@ __author__ = "Vilhelm Prytz"
 __email__ = "vilhelm@prytznet.se"
 
 
-def get_alarm_time(url: str, hours: int, minutes: int):
+def get_context_events(url: str, context: datetime = date.today()):
     cal = Calendar(requests.get(url).text)
 
-    today = date.today()
-    tomorrow = today + timedelta(days=1)
-    alarm_diff = timedelta(hours=hours, minutes=minutes)
-
-    tomorrow_events = []
+    events = []
 
     for event in list(cal.timeline):
         begin_datetime_obj = datetime.strptime(
@@ -23,15 +19,17 @@ def get_alarm_time(url: str, hours: int, minutes: int):
         )
 
         if (
-            begin_datetime_obj.year == tomorrow.year
-            and begin_datetime_obj.month == tomorrow.month
-            and begin_datetime_obj.day == tomorrow.day
+            begin_datetime_obj.year == context.year
+            and begin_datetime_obj.month == context.month
+            and begin_datetime_obj.day == context.day
         ):
-            tomorrow_events.append(begin_datetime_obj)
+            events.append(begin_datetime_obj)
 
-    # no events tomorrow; no alarm clock
-    if len(tomorrow_events) == 0:
-        return False
+    return events
 
-    first_event = min(tomorrow_events)
+
+def get_alarm_time(events: list, hours: int, minutes: int):
+    alarm_diff = timedelta(hours=hours, minutes=minutes)
+
+    first_event = min(events)
     return first_event - alarm_diff
