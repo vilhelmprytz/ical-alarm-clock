@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 
 from ics import Calendar
-from datetime import datetime, date, timedelta
+from datetime import datetime, timedelta
 import requests
 
 __author__ = "Vilhelm Prytz"
 __email__ = "vilhelm@prytznet.se"
 
 
-def get_context_events(url: str, context: datetime = date.today()):
+def get_context_events(url: str, context: datetime = datetime.now()):
     cal = Calendar(requests.get(url).text)
 
     events = []
