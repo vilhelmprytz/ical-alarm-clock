@@ -4,6 +4,7 @@ from json import dumps
 from flask import Flask, jsonify
 from werkzeug.exceptions import HTTPException
 from os import environ
+from datetime import datetime
 from ical_parser import get_alarm_time, get_context_events
 
 __author__ = "Vilhelm Prytz"
@@ -31,10 +32,24 @@ def handle_exception(e):
 
 @app.route("/api/alarm")
 def get_alarm():
+    # this might be the worst way ever to avoid running
+    # datetime.now() multiple times and avoiding
+    # variable declarations... utterly stupid but it work's
+    curr_time = [
+        {
+            "year": x.year,
+            "month": x.month,
+            "day": x.day,
+            "hour": x.hour,
+            "minute": x.minute,
+        }
+        for x in [datetime.now()]
+    ][0]
+
     events = get_context_events(url=URL)
 
     if len(events) == 0:
-        return jsonify({"alarm": False})
+        return jsonify({"alarm": False, "curr_time": curr_time})
 
     date = get_alarm_time(events=events, hours=HOURS, minutes=MINUTES)
 
@@ -46,6 +61,7 @@ def get_alarm():
             "day": date.day,
             "hour": date.hour,
             "minute": date.minute,
+            "curr_time": curr_time,
         }
     )
 
