@@ -8,7 +8,7 @@ __author__ = "Vilhelm Prytz"
 __email__ = "vilhelm@prytznet.se"
 
 
-def get_context_events(url: str, context: datetime = datetime.now()):
+def get_context_events(url: str, context: datetime):
     cal = Calendar(requests.get(url).text)
 
     events = []

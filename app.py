@@ -32,21 +32,16 @@ def handle_exception(e):
 
 @app.route("/api/alarm")
 def get_alarm():
-    # this might be the worst way ever to avoid running
-    # datetime.now() multiple times and avoiding
-    # variable declarations... utterly stupid but it work's
-    curr_time = [
-        {
-            "year": x.year,
-            "month": x.month,
-            "day": x.day,
-            "hour": x.hour,
-            "minute": x.minute,
-        }
-        for x in [datetime.now()]
-    ][0]
+    curr = datetime.now()
+    curr_time = {
+        "year": curr.year,
+        "month": curr.month,
+        "day": curr.day,
+        "hour": curr.hour,
+        "minute": curr.minute,
+    }
 
-    events = get_context_events(url=URL)
+    events = get_context_events(url=URL, context=curr)
 
     if len(events) == 0:
         return jsonify({"alarm": False, "curr_time": curr_time})
