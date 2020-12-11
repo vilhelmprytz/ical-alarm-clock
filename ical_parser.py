@@ -8,22 +8,29 @@ __author__ = "Vilhelm Prytz"
 __email__ = "vilhelm@prytznet.se"
 
 
+def _ical_arrow_to_datetime(x):
+    return datetime.strptime(str(x)[:19], "%Y-%m-%dT%H:%M:%S")
+
+
 def get_context_events(url: str, context: datetime):
     cal = Calendar(requests.get(url).text)
 
     events = []
 
     for event in list(cal.timeline):
-        begin_datetime_obj = datetime.strptime(
-            str(event.begin)[:19], "%Y-%m-%dT%H:%M:%S"
-        )
+        begin = _ical_arrow_to_datetime(event.begin)
 
         if (
-            begin_datetime_obj.year == context.year
-            and begin_datetime_obj.month == context.month
-            and begin_datetime_obj.day == context.day
+            begin.year == context.year
+            and begin.month == context.month
+            and begin.day == context.day
         ):
-            events.append(begin_datetime_obj)
+
+            # "all day" events should be ignored
+            if begin + timedelta(hours=24) == _ical_arrow_to_datetime(event.end):
+                continue
+
+            events.append(begin)
 
     return events
 
