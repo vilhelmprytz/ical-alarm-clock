@@ -39,9 +39,13 @@ function App() {
     <div className="App">
       <header className="App-header">
         <p>Today's alarm</p>
-        <p>{JSON.stringify(todayAlarm)}</p>
+        <div>
+          <pre>{JSON.stringify(todayAlarm, null, 2)}</pre>
+        </div>
         <p>Tomorrow</p>
-        <p>{JSON.stringify(tomorrowAlarm)}</p>
+        <div>
+          <pre>{JSON.stringify(tomorrowAlarm, null, 2)}</pre>
+        </div>
       </header>
     </div>
   );
